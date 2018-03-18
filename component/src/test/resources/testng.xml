@@ -37,4 +37,10 @@ under the License.
             <package name="org.ballerinalang.net.jms.nativeimpl.message"/>
         </packages>
     </test>
+
+    <test name="ballerina-jms-message-client-test-cases" parallel="false">
+        <packages>
+            <package name="org.ballerinalang.net.jms.nativeimpl.client"/>
+        </packages>
+    </test>
 </suite>

@@ -27,8 +27,9 @@ import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BConnector;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.natives.annotations.Argument;
-import org.ballerinalang.natives.annotations.BallerinaAction;
+import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.net.jms.AbstractNonBlockingAction;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.DataContext;
@@ -47,23 +48,20 @@ import org.wso2.transport.jms.utils.JMSConstants;
  *
  * @since 0.95.2
  */
-@BallerinaAction(packageName = "ballerina.net.jms",
-                    actionName = "poll",
-                    connectorName = "ClientConnector",
-                    args = {
-                            @Argument(name = "queueName",
-                                    type = TypeKind.STRING),
-                            @Argument(name = "timeout", type = TypeKind.INT)
-                    },
-                    returnType = {@ReturnType(type = TypeKind.STRUCT, elementType = TypeKind.STRUCT,
-                                            structPackage = "ballerina.net.jms", structType = "JMSMessage"),
-                                @ReturnType(type = TypeKind.STRUCT)
-                    },
-                    connectorArgs = {
-                            @Argument(name = "options", type = TypeKind.STRUCT, structType = "ClientProperties",
-                                    structPackage = "ballerina.net.jms")
-                    }
-                    )
+@BallerinaFunction(
+    packageName = "ballerina.net.jms",
+    functionName = "poll",
+    receiver = @Receiver(type = TypeKind.STRUCT, structType = "ClientConnector",
+            structPackage = "ballerina.net.jms"),
+    args = {
+            @Argument(name = "queueName", type = TypeKind.STRING),
+            @Argument(name = "timeout", type = TypeKind.INT)
+    },
+    returnType = {
+            @ReturnType(type = TypeKind.STRUCT, structType = "JMSMessage", structPackage = "ballerina.net.jms"),
+            @ReturnType(type = TypeKind.STRUCT),
+    }
+)
 public class Poll extends AbstractNonBlockingAction {
     private static final Logger log = LoggerFactory.getLogger(Poll.class);
 

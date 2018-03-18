@@ -36,6 +36,7 @@ public class JMSDispatcher {
     private static final Logger log = LoggerFactory.getLogger(JMSDispatcher.class);
 
     public static BValue[] getSignatureParameters(Resource resource, Message jmsCarbonMessage) {
+        
         BStruct message = ConnectorUtils.createStruct(resource, Constants.PROTOCOL_PACKAGE_JMS, Constants.JMS_MESSAGE);
         message.addNativeData(Constants.JMS_API_MESSAGE, JMSUtils.buildBallerinaJMSMessage(jmsCarbonMessage));
         message.addNativeData(Constants.INBOUND_REQUEST, Boolean.TRUE);

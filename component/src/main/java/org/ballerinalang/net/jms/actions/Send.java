@@ -24,7 +24,8 @@ import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BConnector;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.natives.annotations.Argument;
-import org.ballerinalang.natives.annotations.BallerinaAction;
+import org.ballerinalang.natives.annotations.Receiver;
+import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.net.jms.AbstractNonBlockingAction;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.JMSTransactionUtil;
@@ -40,24 +41,22 @@ import org.wso2.transport.jms.utils.JMSConstants;
 /**
  * {@code Send} is the send action implementation of the JMS Connector.
  */
-@BallerinaAction(packageName = "ballerina.net.jms",
-                 actionName = "send",
-                 connectorName = "ClientConnector",
-                 args = {
-                         @Argument(name = "destinationName",
-                                   type = TypeKind.STRING), @Argument(name = "message",
-                                                                      type = TypeKind.STRUCT)
-                 },
-                 connectorArgs = {
-                         @Argument(name = "options", type = TypeKind.STRUCT, structType = "ClientProperties",
-                                 structPackage = "ballerina.net.jms")
-                 }
-                 )
+@BallerinaFunction(
+    packageName = "ballerina.net.jms",
+    functionName = "send",
+    receiver = @Receiver(type = TypeKind.STRUCT, structType = "ClientConnector",
+            structPackage = "ballerina.net.jms"),
+    args = {
+            @Argument(name = "destinationName", type = TypeKind.STRING),
+            @Argument(name = "message", type = TypeKind.STRUCT)
+    }
+)
 public class Send extends AbstractNonBlockingAction {
     private static final Logger log = LoggerFactory.getLogger(Send.class);
 
     @Override
     public void execute(Context context,  CallableUnitCallback callback) {
+        log.info("execute sending JMS Message to ");
 
         // Extract argument values
         BConnector bConnector = (BConnector) context.getRefArgument(0);
@@ -77,9 +76,9 @@ public class Send extends AbstractNonBlockingAction {
         Message jmsMessage = JMSUtils.getJMSMessage(messageStruct);
 
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("sending JMS Message to " + destination);
-            }
+            //if (log.isDebugEnabled()) {
+                log.info("sending JMS Message to " + destination);
+           //}
             // Add ReplyTo header to the message
             JMSUtils.updateReplyToDestination(messageStruct, jmsClientConnector);
 

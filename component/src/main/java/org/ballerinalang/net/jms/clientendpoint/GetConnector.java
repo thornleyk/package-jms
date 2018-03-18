@@ -17,16 +17,17 @@
  */
 
 package org.ballerinalang.net.jms.clientendpoint;
-
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.BlockingNativeCallableUnit;
+import org.ballerinalang.connector.api.BLangConnectorSPIUtil;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BConnector;
+import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.natives.annotations.ReturnType;
-import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.connector.api.BLangConnectorSPIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Get the client endpoint.
@@ -42,9 +43,12 @@ import org.ballerinalang.connector.api.BLangConnectorSPIUtil;
                     isPublic = true
 )
 public class GetConnector extends BlockingNativeCallableUnit {
+    private static final Logger log = LoggerFactory.getLogger(GetConnector.class);
 
     @Override
     public void execute(Context context) {
+        log.info("execute");
+
         BConnector clientConnector = null;
         BStruct clientEndPoint = (BStruct) context.getRefArgument(0);
         BStruct clientEndpointConfig = (BStruct) clientEndPoint.getRefField(0);
