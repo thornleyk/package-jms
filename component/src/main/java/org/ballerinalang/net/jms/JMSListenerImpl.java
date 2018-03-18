@@ -18,16 +18,15 @@
 
 package org.ballerinalang.net.jms;
 
-import org.ballerinalang.connector.api.ConnectorFuture;
-import org.ballerinalang.connector.api.ConnectorFutureListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jms.Message;
+
 import org.ballerinalang.connector.api.Executor;
 import org.ballerinalang.connector.api.Resource;
 import org.wso2.transport.jms.callback.JMSCallback;
 import org.wso2.transport.jms.contract.JMSListener;
-
-import java.util.HashMap;
-import java.util.Map;
-import javax.jms.Message;
 
 /**
  * JMS Connector listener for Ballerina.
@@ -45,14 +44,11 @@ public class JMSListenerImpl implements JMSListener {
         if (jmsCallback != null) {
             Map<String, Object> properties = new HashMap<>();
             properties.put(Constants.JMS_SESSION_ACKNOWLEDGEMENT_MODE, jmsCallback.getAcknowledgementMode());
+            JMSConnectorFutureListener futureListener = new JMSConnectorFutureListener(jmsCallback);
 
-            ConnectorFuture future = Executor
-                    .submit(resource, properties, JMSDispatcher.getSignatureParameters(resource, jmsMessage));
-
-            ConnectorFutureListener futureListener = new JMSConnectorFutureListener(jmsCallback);
-            future.setConnectorFutureListener(futureListener);
+            Executor.submit(resource, futureListener, null, JMSDispatcher.getSignatureParameters(resource, jmsMessage));
         } else {
-            Executor.submit(resource, null, JMSDispatcher.getSignatureParameters(resource, jmsMessage));
+            Executor.submit(resource, null, null, JMSDispatcher.getSignatureParameters(resource, jmsMessage));
         }
     }
 

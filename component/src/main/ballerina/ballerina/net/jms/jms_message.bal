@@ -1,7 +1,6 @@
 package ballerina.net.jms;
 
-import ballerina.util;
-
+@Description { value:"Represents an JMS message"}
 public struct JMSMessage {
 }
 
@@ -17,100 +16,6 @@ public native function <JMSMessage msg> rollback ();
 @Description { value:"Session commit action implementation for jms connector when using jms session transaction mode"}
 @Param { value:"message: message" }
 public native function <JMSMessage msg> commit ();
-
-@Description { value:"JMS Client connector properties to pass JMS client connector configurations"}
-@Field {value:"initialContextFactory: Initial context factory name, specific to the provider"}
-@Field {value:"providerUrl: Connection URL of the provider"}
-@Field {value:"connectionFactoryName: Name of the connection factory"}
-@Field {value:"connectionFactoryType: Type of the connection factory (queue/topic)"}
-@Field {value:"acknowledgementMode: Ack mode (auto-ack, client-ack, dups-ok-ack, transacted, xa)"}
-@Field {value:"clientCaching: Is client caching enabled (default: enabled)"}
-@Field {value:"connectionUsername: Connection factory username"}
-@Field {value:"connectionPassword: Connection factory password"}
-@Field {value:"configFilePath: Path to be used for locating jndi configuration"}
-@Field {value:"connectionCount: Number of pooled connections to be used in the transport level (default: 5)"}
-@Field {value:"sessionCount: Number of pooled sessions to be used per connection in the transport level (default: 10)"}
-@Field {value:"properties: Additional Properties"}
-public struct ClientProperties {
-    string initialContextFactory;
-    string providerUrl;
-    string connectionFactoryName;
-    string connectionFactoryType = "queue";
-    string acknowledgementMode = "AUTO_ACKNOWLEDGE";
-    boolean clientCaching = true;
-    string connectionUsername;
-    string connectionPassword;
-    string configFilePath;
-    int connectionCount = 5;
-    int sessionCount = 10;
-    map properties;
-}
-
-@Description { value:"JMS client connector to poll messages to the JMS provider."}
-@Param { value:"clientProperties: Pre-defind and additional properties for the connector"}
-public connector JmsClient (ClientProperties clientProperties) {
-
-    string connectorID = util:uuid();
-
-    @Description {value:"SEND action implementation of the JMS Connector"}
-    @Param {value:"destinationName: Destination Name"}
-    @Param {value:"message: Message"}
-    native action send (string destinationName, JMSMessage m);
-
-    @Description {value:"POLL action implementation of the JMS Connector"}
-    @Param {value:"destinationName: Destination Name"}
-    @Param {value:"time: Timeout that needs to blocked on"}
-    native action poll (string destinationName, int time) (JMSMessage);
-
-    @Description {value:"POLL action implementation with selector support of the JMS Connector"}
-    @Param {value:"destinationName: Destination Name"}
-    @Param {value:"time: Timeout that needs to blocked on"}
-    @Param {value:"selector: Selector to filter out messages"}
-    native action pollWithSelector (string destinationName, int time, string selector) (JMSMessage);
-
-}
-
-
-@Description { value:"Create JMS Text Message based on client connector"}
-@Param { value:"jmsClient: clientConnector" }
-public native function createTextMessage (ClientProperties jmsClient) (JMSMessage);
-
-@Description { value:"Create JMS Bytes Message based on client connector"}
-@Param { value:"jmsClient: clientConnector" }
-public native function createBytesMessage (ClientProperties jmsClient) (JMSMessage);
-
-@Description { value:"Value for persistent JMS message delivery mode"}
-public const int PERSISTENT_DELIVERY_MODE = 2;
-
-@Description { value:"Value for non persistent JMS message delivery mode"}
-public const int NON_PERSISTENT_DELIVERY_MODE = 1;
-
-@Description { value:"Value to use when acknowledge jms messages for success"}
-public const string DELIVERY_SUCCESS = "Success";
-
-@Description { value:"Value to use when acknowledge jms messages for errors"}
-public const string DELIVERY_ERROR = "Error";
-
-@Description { value:"Value for auto acknowledgement mode (default)"}
-public const string AUTO_ACKNOWLEDGE = "AUTO_ACKNOWLEDGE";
-
-@Description { value:"Value for client acknowledge mode"}
-public const string CLIENT_ACKNOWLEDGE = "CLIENT_ACKNOWLEDGE";
-
-@Description { value:"Value for dups ok acknowledgement mode"}
-public const string DUPS_OK_ACKNOWLEDGE = "DUPS_OK_ACKNOWLEDGE";
-
-@Description { value:"Value for Session transacted mode"}
-public const string SESSION_TRANSACTED = "SESSION_TRANSACTED";
-
-@Description { value:"Value for XA transcted mode"}
-public const string XA_TRANSACTED = "XA_TRANSACTED";
-
-@Description { value:"Value for JMS Queue type"}
-public const string TYPE_QUEUE = "queue";
-
-@Description { value:"Value for JMS Topic type"}
-public const string TYPE_TOPIC = "topic";
 
 @Description { value:"Sets a JMS transport string property from the message"}
 @Param { value:"key: The string property name" }

@@ -17,7 +17,7 @@
 package org.ballerinalang.net.jms.actions;
 
 import org.ballerinalang.bre.Context;
-import org.ballerinalang.connector.api.ConnectorFuture;
+import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaAction;
@@ -32,23 +32,29 @@ import org.slf4j.LoggerFactory;
  * @since 0.95.5
  */
 @BallerinaAction(packageName = "ballerina.net.jms",
-                 actionName = "pollWithSelector",
-                 connectorName = Constants.CONNECTOR_NAME,
-                 args = {
-                         @Argument(name = "queueName",
-                                   type = TypeKind.STRING),
-                         @Argument(name = "timeout", type = TypeKind.INT),
-                         @Argument(name = "selector", type = TypeKind.STRING)
-                 },
-                 returnType = {@ReturnType(type = TypeKind.STRUCT, elementType = TypeKind.STRUCT,
-                                           structPackage = "ballerina.net.jms", structType = "JMSMessage"),
-                               @ReturnType(type = TypeKind.STRUCT)})
+                    actionName = "pollWithSelector",
+                    connectorName = "ClientConnector",
+                    args = {
+                            @Argument(name = "queueName",
+                                    type = TypeKind.STRING),
+                            @Argument(name = "timeout", type = TypeKind.INT),
+                            @Argument(name = "selector", type = TypeKind.STRING)
+                    },
+                    returnType = {@ReturnType(type = TypeKind.STRUCT, elementType = TypeKind.STRUCT,
+                                            structPackage = "ballerina.net.jms", structType = "JMSMessage"),
+                                @ReturnType(type = TypeKind.STRUCT)
+                    },
+                    connectorArgs = {
+                            @Argument(name = "options", type = TypeKind.STRUCT, structType = "ClientProperties",
+                                    structPackage = "ballerina.net.jms")
+                    }
+                    )
 public class SelectorPoll extends Poll {
     private static final Logger log = LoggerFactory.getLogger(SelectorPoll.class);
 
     @Override
-    public ConnectorFuture execute(Context context) {
-        String messageSelector = getStringArgument(context, 1);
-        return executePollAction(context, messageSelector);
+    public void execute(Context context, CallableUnitCallback callback) {
+        String messageSelector = context.getStringArgument(1);
+        executePollAction(context, callback, messageSelector);
     }
 }

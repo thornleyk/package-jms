@@ -1,6 +1,21 @@
 package ballerina.net.jms;
 
-public annotation configuration attach service<> {
+@Description {value:"Configuration for a JMS service."}
+@Field {value:"initialContextFactory: "}
+@Field {value:"providerUrl: "}
+@Field {value:"connectionFactoryType: "}
+@Field {value:"connectionFactoryName: "}
+@Field {value:"destination: "}
+@Field {value:"acknowledgementMode: "}
+@Field {value:"subscriptionId: "}
+@Field {value:"clientId: "}
+@Field {value:"configFilePath: "}
+@Field {value:"connectionFactoryNature: "}
+@Field {value:"concurrentConsumers: "}
+@Field {value:"connectionUsername: "}
+@Field {value:"connectionPassword: "}
+@Field {value:"properties: "}
+public struct ResourceConfig  {
     string initialContextFactory;
     string providerUrl;
     string connectionFactoryType;
@@ -16,3 +31,5 @@ public annotation configuration attach service<> {
     string connectionPassword;
     string[] properties;
 }
+
+public annotation <resource> configuration ResourceConfig;

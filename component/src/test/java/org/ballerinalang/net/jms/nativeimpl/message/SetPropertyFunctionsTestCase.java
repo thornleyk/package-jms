@@ -18,6 +18,10 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
+import org.ballerinalang.launcher.util.CompileResult;
 import org.ballerinalang.model.values.BBoolean;
 import org.ballerinalang.model.values.BFloat;
 import org.ballerinalang.model.values.BInteger;
@@ -28,14 +32,10 @@ import org.ballerinalang.net.jms.BallerinaJMSMessage;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.ballerinalang.net.jms.nativeimpl.util.BTestUtils;
-import org.ballerinalang.net.jms.nativeimpl.util.CompileResult;
 import org.ballerinalang.net.jms.nativeimpl.util.MockJMSMessage;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 /**
  * Test cases for jms message Set property native functions.
@@ -56,7 +56,7 @@ public class SetPropertyFunctionsTestCase {
                 new BallerinaJMSMessage(jmsMessage));
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setStringProperty ")
+    @Test( description = "Test Ballerina native JMSMessage setStringProperty ")
     public void testSetStringProperty() throws JMSException {
         String propKey = "string_property_key";
         String propValue = "string_property_value";
@@ -73,7 +73,7 @@ public class SetPropertyFunctionsTestCase {
         Assert.assertEquals(propValue, resultValue, "String property is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setStringProperty ")
+    @Test( description = "Test Ballerina native JMSMessage setStringProperty ")
     public void testSetBooleanProperty() throws JMSException {
         String propKey = "boolean_property_key";
         boolean propValue = Boolean.TRUE;
@@ -90,7 +90,7 @@ public class SetPropertyFunctionsTestCase {
         Assert.assertEquals(propValue, resultValue, "Boolean property is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setIntProperty ")
+    @Test( description = "Test Ballerina native JMSMessage setIntProperty ")
     public void testSetIntProperty() throws JMSException {
         String propKey = "int_property_key";
         int propValue = 1;
@@ -107,7 +107,7 @@ public class SetPropertyFunctionsTestCase {
         Assert.assertEquals(propValue, resultValue, "Boolean property is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setFloatProperty ")
+    @Test( description = "Test Ballerina native JMSMessage setFloatProperty ")
     public void testSetFloatProperty() throws JMSException {
         String propKey = "float_property_key";
         float propValue = 1.1f;

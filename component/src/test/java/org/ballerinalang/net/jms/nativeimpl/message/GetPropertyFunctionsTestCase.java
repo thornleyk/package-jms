@@ -18,6 +18,10 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
+import org.ballerinalang.launcher.util.CompileResult;
 import org.ballerinalang.model.values.BBoolean;
 import org.ballerinalang.model.values.BFloat;
 import org.ballerinalang.model.values.BInteger;
@@ -27,14 +31,10 @@ import org.ballerinalang.model.values.BValue;
 import org.ballerinalang.net.jms.BallerinaJMSMessage;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.nativeimpl.util.BTestUtils;
-import org.ballerinalang.net.jms.nativeimpl.util.CompileResult;
 import org.ballerinalang.net.jms.nativeimpl.util.MockJMSMessage;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 /**
  * Test cases for jms message Get property native functions.
@@ -70,7 +70,7 @@ public class GetPropertyFunctionsTestCase {
         messageStruct.addNativeData(Constants.JMS_API_MESSAGE, new BallerinaJMSMessage(jmsMessage));
     }
 
-    @Test(description = "Test Ballerina native JMSMessage getStringProperty ")
+    @Test( description = "Test Ballerina native JMSMessage getStringProperty ")
     public void testGetStringProperty() throws JMSException {
         String resultValue = "";
 
@@ -85,7 +85,7 @@ public class GetPropertyFunctionsTestCase {
                 "String property is not correctly retrieved from the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage getStringProperty ")
+    @Test( description = "Test Ballerina native JMSMessage getStringProperty ")
     public void testGetBooleanProperty() throws JMSException {
         boolean resultValue = Boolean.FALSE;
 
@@ -100,7 +100,7 @@ public class GetPropertyFunctionsTestCase {
                 "Boolean property is not correctly retrieved from the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage getIntProperty ")
+    @Test( description = "Test Ballerina native JMSMessage getIntProperty ")
     public void testGetIntProperty() throws JMSException {
         int resultValue = 0;
 
@@ -114,7 +114,7 @@ public class GetPropertyFunctionsTestCase {
         Assert.assertEquals(intPropValue, resultValue, "Int property is not correctly retrieved from the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage getFloatProperty ")
+    @Test( description = "Test Ballerina native JMSMessage getFloatProperty ")
     public void testGetFloatProperty() throws JMSException {
         float resultValue = 0f;
 

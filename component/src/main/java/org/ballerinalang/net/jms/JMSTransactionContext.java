@@ -17,7 +17,7 @@
 */
 package org.ballerinalang.net.jms;
 
-import org.ballerinalang.bre.BallerinaTransactionContext;
+import org.ballerinalang.util.transactions.BallerinaTransactionContext;
 import org.ballerinalang.util.exceptions.BallerinaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ import javax.transaction.xa.XAResource;
  * inside a Context flow.
  */
 public class JMSTransactionContext implements BallerinaTransactionContext {
-    private static final Logger log = LoggerFactory.getLogger(JMSConnectorFutureListener.class);
+    private static final Logger log = LoggerFactory.getLogger(JMSTransactionContext.class);
     private SessionWrapper sessionWrapper;
     private JMSClientConnector clientConnector;
 

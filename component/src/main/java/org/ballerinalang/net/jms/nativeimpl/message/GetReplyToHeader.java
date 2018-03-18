@@ -21,10 +21,10 @@ import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BString;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.model.values.BValue;
-import org.ballerinalang.natives.AbstractNativeFunction;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.net.jms.AbstractBlockingAction;
 import org.ballerinalang.net.jms.BallerinaJMSMessage;
 import org.ballerinalang.net.jms.Constants;
 import org.slf4j.Logger;
@@ -42,13 +42,13 @@ import org.slf4j.LoggerFactory;
                    functionName = "getReplyTo",
                    returnType = { @ReturnType(type = TypeKind.STRING) },
                    isPublic = true)
-public class GetReplyToHeader extends AbstractNativeFunction {
+public class GetReplyToHeader extends AbstractBlockingAction {
 
     private static final Logger log = LoggerFactory.getLogger(GetReplyToHeader.class);
 
-    public BValue[] execute(Context context) {
+    public void execute(Context context) {
 
-        BStruct messageStruct = ((BStruct) this.getRefArgument(context, 0));
+        BStruct messageStruct = ((BStruct) context.getRefArgument(0));
         BallerinaJMSMessage ballerinaJMSMessage = (BallerinaJMSMessage) messageStruct
                 .getNativeData(Constants.JMS_API_MESSAGE);
         BValue[] headerValue = getBValues(new BString(ballerinaJMSMessage.getReplyDestinationName()));
@@ -57,6 +57,6 @@ public class GetReplyToHeader extends AbstractNativeFunction {
             log.debug("get Reply destination name from the jms message");
         }
 
-        return headerValue;
+        context.setReturnValues(headerValue);
     }
 }

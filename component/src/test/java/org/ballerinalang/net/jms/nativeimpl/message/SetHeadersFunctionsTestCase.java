@@ -18,6 +18,10 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
+import org.ballerinalang.launcher.util.CompileResult;
 import org.ballerinalang.model.values.BInteger;
 import org.ballerinalang.model.values.BString;
 import org.ballerinalang.model.values.BStruct;
@@ -26,14 +30,10 @@ import org.ballerinalang.net.jms.BallerinaJMSMessage;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.ballerinalang.net.jms.nativeimpl.util.BTestUtils;
-import org.ballerinalang.net.jms.nativeimpl.util.CompileResult;
 import org.ballerinalang.net.jms.nativeimpl.util.MockJMSMessage;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 /**
  * Test cases for jms message Set headers native functions.
@@ -53,7 +53,7 @@ public class SetHeadersFunctionsTestCase {
         messageStruct.addNativeData(Constants.JMS_API_MESSAGE, new BallerinaJMSMessage(jmsMessage));
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setDeliveryMode Header ")
+    @Test( description = "Test Ballerina native JMSMessage setDeliveryMode Header ")
     public void testSetDeliveryMode() throws JMSException {
         int expectedValue = 2;
         int actualValue = 10;
@@ -69,7 +69,7 @@ public class SetHeadersFunctionsTestCase {
         Assert.assertEquals(actualValue, expectedValue, "DeliveryMode Header is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setPriority Header ")
+    @Test( description = "Test Ballerina native JMSMessage setPriority Header ")
     public void testSetPriority() throws JMSException {
         int expectedValue = 2;
         int actualValue = 10;
@@ -85,7 +85,7 @@ public class SetHeadersFunctionsTestCase {
         Assert.assertEquals(actualValue, expectedValue, "Priority Header is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setCorrelationID Header ")
+    @Test( description = "Test Ballerina native JMSMessage setCorrelationID Header ")
     public void testSetCorrelationID() throws JMSException {
         String expectedValue = "abcd-1234";
         String actualValue = "";
@@ -101,7 +101,7 @@ public class SetHeadersFunctionsTestCase {
         Assert.assertEquals(actualValue, expectedValue, "CorrelationID Header is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setType Header ")
+    @Test( description = "Test Ballerina native JMSMessage setType Header ")
     public void testSetType() throws JMSException {
         String expectedValue = "jms-type-1";
         String actualValue = "";
@@ -117,7 +117,7 @@ public class SetHeadersFunctionsTestCase {
         Assert.assertEquals(actualValue, expectedValue, "Type Header is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setExpiration Header ")
+    @Test( description = "Test Ballerina native JMSMessage setExpiration Header ")
     public void testSetExpiration() throws JMSException {
         long expectedValue = 2;
         long actualValue = 10;

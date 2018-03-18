@@ -25,11 +25,13 @@ import javax.jms.Session;
 /**
  * Callback for testing service/resource invocations.
  */
-public class TestTransactionCallback extends JMSCallback {
+public class TestTransactionCallback extends JMSCallback implements FutureWaiter{
 
     private boolean commited = false;
 
     private boolean rollbacked = false;
+
+    private boolean complete = false;
 
     public TestTransactionCallback(Session session) {
         super(session);
@@ -43,6 +45,7 @@ public class TestTransactionCallback extends JMSCallback {
         } else {
             rollbacked = true;
         }
+        complete = true;
     }
 
     @Override
@@ -56,5 +59,9 @@ public class TestTransactionCallback extends JMSCallback {
 
     public boolean isRollbacked() {
         return rollbacked;
+    }
+
+    public boolean isComplete() {
+        return complete;
     }
 }

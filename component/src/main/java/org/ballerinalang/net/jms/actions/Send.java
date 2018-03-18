@@ -16,15 +16,18 @@
 
 package org.ballerinalang.net.jms.actions;
 
+import javax.jms.Message;
+
 import org.ballerinalang.bre.Context;
-import org.ballerinalang.connector.api.ConnectorFuture;
+import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BConnector;
 import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.nativeimpl.actions.ClientConnectorFuture;
 import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaAction;
+import org.ballerinalang.net.jms.AbstractNonBlockingAction;
 import org.ballerinalang.net.jms.Constants;
+import org.ballerinalang.net.jms.JMSTransactionUtil;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.ballerinalang.util.exceptions.BallerinaException;
 import org.slf4j.Logger;
@@ -34,33 +37,32 @@ import org.wso2.transport.jms.exception.JMSConnectorException;
 import org.wso2.transport.jms.sender.wrappers.SessionWrapper;
 import org.wso2.transport.jms.utils.JMSConstants;
 
-import javax.jms.Message;
-
 /**
  * {@code Send} is the send action implementation of the JMS Connector.
  */
 @BallerinaAction(packageName = "ballerina.net.jms",
                  actionName = "send",
-                 connectorName = Constants.CONNECTOR_NAME,
+                 connectorName = "ClientConnector",
                  args = {
                          @Argument(name = "destinationName",
                                    type = TypeKind.STRING), @Argument(name = "message",
                                                                       type = TypeKind.STRUCT)
                  },
                  connectorArgs = {
-                         @Argument(name = "properties",
-                                   type = TypeKind.STRUCT)
-                 })
-public class Send extends AbstractJMSAction {
+                         @Argument(name = "options", type = TypeKind.STRUCT, structType = "ClientProperties",
+                                 structPackage = "ballerina.net.jms")
+                 }
+                 )
+public class Send extends AbstractNonBlockingAction {
     private static final Logger log = LoggerFactory.getLogger(Send.class);
 
     @Override
-    public ConnectorFuture execute(Context context) {
+    public void execute(Context context,  CallableUnitCallback callback) {
 
         // Extract argument values
-        BConnector bConnector = (BConnector) getRefArgument(context, 0);
-        BStruct messageStruct = ((BStruct) getRefArgument(context, 1));
-        String destination = getStringArgument(context, 0);
+        BConnector bConnector = (BConnector) context.getRefArgument(0);
+        BStruct messageStruct = ((BStruct) context.getRefArgument(1));
+        String destination = context.getStringArgument(0);
 
         // Retrieve the ack mode from jms client configuration
         BStruct connectorConfig = ((BStruct) bConnector.getRefField(0));
@@ -68,7 +70,7 @@ public class Send extends AbstractJMSAction {
 
         // Retrieve transport client
         JMSClientConnector jmsClientConnector = (JMSClientConnector) bConnector
-                .getnativeData(Constants.JMS_TRANSPORT_CLIENT_CONNECTOR);
+                .getNativeData(Constants.JMS_TRANSPORT_CLIENT_CONNECTOR);
 
         String connectorKey = bConnector.getStringField(0);
 
@@ -88,7 +90,7 @@ public class Send extends AbstractJMSAction {
                     throw new BallerinaException(
                             "jms transacted send action should perform inside a transaction block ", context);
                 }
-            SessionWrapper sessionWrapper = getTxSession(context, jmsClientConnector, connectorKey);
+            SessionWrapper sessionWrapper = JMSTransactionUtil.getTxSession(context, jmsClientConnector, connectorKey);
             jmsClientConnector.sendTransactedMessage(jmsMessage, destination, sessionWrapper);
             } else {
                 jmsClientConnector.send(jmsMessage, destination);
@@ -96,8 +98,6 @@ public class Send extends AbstractJMSAction {
         } catch (JMSConnectorException e) {
             throw new BallerinaException("failed to send message. " + e.getMessage(), e, context);
         }
-        ClientConnectorFuture future = new ClientConnectorFuture();
-        future.notifySuccess();
-        return future;
+        callback.notifySuccess();
     }
 }

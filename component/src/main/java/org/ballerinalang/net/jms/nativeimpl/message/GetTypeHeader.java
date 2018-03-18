@@ -16,21 +16,21 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BString;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.model.values.BValue;
-import org.ballerinalang.natives.AbstractNativeFunction;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.net.jms.AbstractBlockingAction;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 /**
  * Get Type header from the JMS Message.
@@ -43,13 +43,13 @@ import javax.jms.Message;
         returnType = {@ReturnType(type = TypeKind.STRING)},
         isPublic = true
 )
-public class GetTypeHeader extends AbstractNativeFunction {
+public class GetTypeHeader extends AbstractBlockingAction {
 
     private static final Logger log = LoggerFactory.getLogger(GetTypeHeader.class);
 
-    public BValue[] execute(Context context) {
+    public void execute(Context context) {
 
-        BStruct messageStruct  = ((BStruct) this.getRefArgument(context, 0));
+        BStruct messageStruct  = ((BStruct) context.getRefArgument(0));
         Message jmsMessage = JMSUtils.getJMSMessage(messageStruct);
         BValue[] headerValue = null;
         try {
@@ -62,6 +62,6 @@ public class GetTypeHeader extends AbstractNativeFunction {
             log.debug("Get Type from message");
         }
 
-        return headerValue;
+        context.setReturnValues(headerValue);
     }
 }

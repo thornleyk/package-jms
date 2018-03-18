@@ -18,20 +18,19 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.model.values.BValue;
-import org.ballerinalang.natives.AbstractNativeFunction;
 import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
+import org.ballerinalang.net.jms.AbstractBlockingAction;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 /**
  * Set a float property to the JMS message.
@@ -46,16 +45,16 @@ import javax.jms.Message;
                 @Argument(name = "value", type = TypeKind.FLOAT)},
         isPublic = true
 )
-public class SetFloatProperty extends AbstractNativeFunction {
+public class SetFloatProperty extends AbstractBlockingAction {
 
     private static final Logger log = LoggerFactory.getLogger(SetFloatProperty.class);
 
     @Override
-    public BValue[] execute(Context context) {
+    public void execute(Context context) {
 
-        BStruct messageStruct  = ((BStruct) this.getRefArgument(context, 0));
-        String propertyName = this.getStringArgument(context, 0);
-        Float propertyValue = (float) this.getFloatArgument(context, 0);
+        BStruct messageStruct  = ((BStruct) context.getRefArgument(0));
+        String propertyName = context.getStringArgument(0);
+        Float propertyValue = (float) context.getFloatArgument(0);
 
         Message jmsMessage = JMSUtils.getJMSMessage(messageStruct);
 
@@ -68,7 +67,5 @@ public class SetFloatProperty extends AbstractNativeFunction {
         if (log.isDebugEnabled()) {
             log.debug("Add " + propertyName + " to message with value: " + propertyValue);
         }
-
-        return AbstractNativeFunction.VOID_RETURN;
     }
 }

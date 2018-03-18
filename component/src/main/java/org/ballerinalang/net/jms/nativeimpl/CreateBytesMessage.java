@@ -18,15 +18,18 @@
 
 package org.ballerinalang.net.jms.nativeimpl;
 
+import java.util.Map;
+
+import javax.jms.Message;
+
 import org.ballerinalang.bre.Context;
-import org.ballerinalang.connector.api.ConnectorUtils;
+import org.ballerinalang.connector.api.BLangConnectorSPIUtil;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.model.values.BValue;
-import org.ballerinalang.natives.AbstractNativeFunction;
 import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.net.jms.AbstractBlockingAction;
 import org.ballerinalang.net.jms.BallerinaJMSMessage;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.JMSUtils;
@@ -37,9 +40,6 @@ import org.wso2.transport.jms.exception.JMSConnectorException;
 import org.wso2.transport.jms.impl.JMSConnectorFactoryImpl;
 import org.wso2.transport.jms.utils.JMSConstants;
 
-import java.util.Map;
-import javax.jms.Message;
-
 /**
  * Create Text JMS Message.
  */
@@ -48,12 +48,12 @@ import javax.jms.Message;
                    returnType = {@ReturnType(type = TypeKind.STRUCT, structPackage = "ballerina.net.jms",
                                              structType = "JMSMessage")},
                    isPublic = true)
-public class CreateBytesMessage extends AbstractNativeFunction {
+public class CreateBytesMessage extends AbstractBlockingAction {
     private static final Logger log = LoggerFactory.getLogger(CreateBytesMessage.class);
 
-    public BValue[] execute(Context context) {
+    public void execute(Context context) {
 
-        BStruct propertiesStruct = ((BStruct) this.getRefArgument(context, 0));
+        BStruct propertiesStruct = ((BStruct) context.getRefArgument(0));
         Map<String, String> propertyMap = JMSUtils.preProcessJmsConfig(propertiesStruct);
 
         Message jmsMessage;
@@ -65,12 +65,11 @@ public class CreateBytesMessage extends AbstractNativeFunction {
             throw new BallerinaException("Failed to create message. " + e.getMessage(), e, context);
         }
 
-        BStruct bStruct = ConnectorUtils
-                .createAndGetStruct(context, Constants.PROTOCOL_PACKAGE_JMS, Constants.JMS_MESSAGE_STRUCT_NAME);
+        BStruct bStruct = BLangConnectorSPIUtil
+                    .createBStruct(context, Constants.PROTOCOL_PACKAGE_JMS, Constants.JMS_MESSAGE_STRUCT_NAME);
 
         bStruct.addNativeData(Constants.JMS_API_MESSAGE, new BallerinaJMSMessage(jmsMessage));
         bStruct.addNativeData(Constants.INBOUND_REQUEST, Boolean.FALSE);
-
-        return this.getBValues(bStruct);
+        context.setReturnValues(getBValues(bStruct));
     }
 }

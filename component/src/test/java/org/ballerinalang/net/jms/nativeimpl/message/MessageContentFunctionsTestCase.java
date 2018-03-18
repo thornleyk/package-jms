@@ -18,6 +18,10 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+
+import org.ballerinalang.launcher.util.CompileResult;
 import org.ballerinalang.model.values.BString;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.model.values.BValue;
@@ -25,14 +29,10 @@ import org.ballerinalang.net.jms.BallerinaJMSMessage;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.ballerinalang.net.jms.nativeimpl.util.BTestUtils;
-import org.ballerinalang.net.jms.nativeimpl.util.CompileResult;
 import org.ballerinalang.net.jms.nativeimpl.util.MockJMSTextMessage;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 
 /**
  * Test cases for jms message content related native functions.
@@ -61,7 +61,7 @@ public class MessageContentFunctionsTestCase {
         messageStruct2.addNativeData(Constants.JMS_API_MESSAGE, new BallerinaJMSMessage(jmsMessage2));
     }
 
-    @Test(description = "Test Ballerina native JMSMessage setTextContent ")
+    @Test( description = "Test Ballerina native JMSMessage setTextContent ")
     public void testSetTextContent() throws JMSException {
         String resultValue = "";
 
@@ -76,7 +76,7 @@ public class MessageContentFunctionsTestCase {
         Assert.assertEquals(textContent, resultValue, "Text Content is not correctly set to the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage getTextContent ")
+    @Test( description = "Test Ballerina native JMSMessage getTextContent ")
     public void testGetTextContent() throws JMSException {
         String resultValue = "";
 
@@ -90,7 +90,7 @@ public class MessageContentFunctionsTestCase {
         Assert.assertEquals(textContent, resultValue, "Text content is not correctly retrieved from the JMS Message");
     }
 
-    @Test(description = "Test Ballerina native JMSMessage getTextContent ", dependsOnMethods = { "testGetTextContent" })
+    @Test( description = "Test Ballerina native JMSMessage getTextContent ", dependsOnMethods = { "testGetTextContent" })
     public void testClearTextContent() throws JMSException {
         String resultValue = "";
 

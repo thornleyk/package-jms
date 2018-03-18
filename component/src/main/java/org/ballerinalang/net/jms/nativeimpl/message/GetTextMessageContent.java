@@ -16,22 +16,21 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
+
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BString;
 import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.model.values.BValue;
-import org.ballerinalang.natives.AbstractNativeFunction;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.net.jms.AbstractBlockingAction;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 
 /**
  * Get text content of the JMS Message.
@@ -44,13 +43,13 @@ import javax.jms.TextMessage;
         returnType = {@ReturnType(type = TypeKind.STRING)},
         isPublic = true
 )
-public class GetTextMessageContent extends AbstractNativeFunction {
+public class GetTextMessageContent extends AbstractBlockingAction {
 
     private static final Logger log = LoggerFactory.getLogger(GetTextMessageContent.class);
 
-    public BValue[] execute(Context context) {
+    public void execute(Context context) {
 
-        BStruct messageStruct  = ((BStruct) this.getRefArgument(context, 0));
+        BStruct messageStruct  = ((BStruct) context.getRefArgument(0));
         Message jmsMessage = JMSUtils.getJMSMessage(messageStruct);
 
         String messageContent = null;
@@ -68,7 +67,6 @@ public class GetTextMessageContent extends AbstractNativeFunction {
         if (log.isDebugEnabled()) {
             log.debug("Get content from the JMS message");
         }
-
-        return this.getBValues(new BString(messageContent));
+        context.setReturnValues(new BString(messageContent));
     }
 }

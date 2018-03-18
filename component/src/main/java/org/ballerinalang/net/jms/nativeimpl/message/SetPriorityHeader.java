@@ -18,20 +18,19 @@
 
 package org.ballerinalang.net.jms.nativeimpl.message;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.model.values.BValue;
-import org.ballerinalang.natives.AbstractNativeFunction;
 import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
+import org.ballerinalang.net.jms.AbstractBlockingAction;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 
 /**
  * Native function to set Priority header to jms message.
@@ -45,15 +44,15 @@ import javax.jms.Message;
         args = {@Argument(name = "value", type = TypeKind.INT)},
         isPublic = true
 )
-public class SetPriorityHeader extends AbstractNativeFunction {
+public class SetPriorityHeader extends AbstractBlockingAction {
 
     private static final Logger log = LoggerFactory.getLogger(SetPriorityHeader.class);
 
     @Override
-    public BValue[] execute(Context context) {
+    public void execute(Context context) {
 
-        BStruct messageStruct  = ((BStruct) this.getRefArgument(context, 0));
-        int value = (int) this.getIntArgument(context, 0);
+        BStruct messageStruct  = ((BStruct) context.getRefArgument(0));
+        int value = (int) context.getIntArgument(0);
 
         Message jmsMessage = JMSUtils.getJMSMessage(messageStruct);
 
@@ -66,7 +65,5 @@ public class SetPriorityHeader extends AbstractNativeFunction {
         if (log.isDebugEnabled()) {
             log.debug("Add Priority to JMS message");
         }
-
-        return AbstractNativeFunction.VOID_RETURN;
     }
 }

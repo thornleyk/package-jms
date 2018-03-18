@@ -17,17 +17,21 @@
  */
 
 package org.ballerinalang.net.jms.nativeimpl.util;
-
-import org.wso2.transport.jms.callback.JMSCallback;
-
 import javax.jms.Session;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wso2.transport.jms.callback.JMSCallback;
 
 /**
  * Acknowledgement Callback for testing service/resource invocations.
  */
-public class TestAcknowledgementCallback extends JMSCallback {
+public class TestAcknowledgementCallback extends JMSCallback implements FutureWaiter {
+    private static final Logger log = LoggerFactory.getLogger(TestAcknowledgementCallback.class);
 
     private boolean acknowledged = false;
+
+    private boolean complete = false;
 
     private boolean reseted = false;
 
@@ -42,6 +46,7 @@ public class TestAcknowledgementCallback extends JMSCallback {
         } else {
             reseted = true;
         }
+        complete = true;
     }
 
     @Override
@@ -55,5 +60,9 @@ public class TestAcknowledgementCallback extends JMSCallback {
 
     public boolean isReseted() {
         return reseted;
+    }
+
+    public boolean isComplete() {
+        return complete;
     }
 }

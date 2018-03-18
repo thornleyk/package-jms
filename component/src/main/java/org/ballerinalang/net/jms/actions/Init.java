@@ -18,14 +18,16 @@
 
 package org.ballerinalang.net.jms.actions;
 
+import java.util.Map;
+
 import org.ballerinalang.bre.Context;
-import org.ballerinalang.connector.api.ConnectorFuture;
+import org.ballerinalang.bre.bvm.CallableUnitCallback;
 import org.ballerinalang.model.types.TypeKind;
 import org.ballerinalang.model.values.BConnector;
 import org.ballerinalang.model.values.BStruct;
-import org.ballerinalang.nativeimpl.actions.ClientConnectorFuture;
 import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaAction;
+import org.ballerinalang.net.jms.AbstractNonBlockingAction;
 import org.ballerinalang.net.jms.Constants;
 import org.ballerinalang.net.jms.JMSUtils;
 import org.ballerinalang.util.exceptions.BallerinaException;
@@ -33,29 +35,27 @@ import org.wso2.transport.jms.contract.JMSClientConnector;
 import org.wso2.transport.jms.exception.JMSConnectorException;
 import org.wso2.transport.jms.impl.JMSConnectorFactoryImpl;
 
-import java.util.Map;
-
 /**
  * {@code Init} is the Init action implementation of the JMS Connector.
  *
  * @since 0.9
  */
-@BallerinaAction(packageName = "ballerina.net.jms",
-                 actionName = "<init>",
-                 connectorName = Constants.CONNECTOR_NAME,
-                 args = {
-                         @Argument(name = "c",
-                                   type = TypeKind.CONNECTOR)
-                 },
-                 connectorArgs = {
-                         @Argument(name = "properties",
-                                   type = TypeKind.STRUCT)
-                 })
-public class Init extends AbstractJMSAction {
+@BallerinaAction(
+    packageName = "ballerina.net.jms",
+    actionName = "<init>",
+    connectorName = "ClientConnector",
+    args = {@Argument(name = "c", type = TypeKind.CONNECTOR)
+    },
+    connectorArgs = {
+            @Argument(name = "options", type = TypeKind.STRUCT, structType = "ClientProperties",
+                      structPackage = "ballerina.net.jms")
+    }
+)
+public class Init extends AbstractNonBlockingAction {
 
     @Override
-    public ConnectorFuture execute(Context context) {
-        BConnector bConnector = (BConnector) getRefArgument(context, 0);
+    public void execute(Context context, CallableUnitCallback callback) {
+        BConnector bConnector = (BConnector) context.getRefArgument(0);
         validateParams(bConnector);
 
         // Create the JMS Transport Client Connector and store it as a native data in the Ballerina JMS Client
@@ -71,9 +71,7 @@ public class Init extends AbstractJMSAction {
             throw new BallerinaException("failed to create jms client connector. " + e.getMessage(), e, context);
         }
 
-        ClientConnectorFuture future = new ClientConnectorFuture();
-        future.notifySuccess();
-        return future;
+        callback.notifySuccess();
     }
 
     private boolean validateParams(BConnector connector) {
@@ -83,10 +81,5 @@ public class Init extends AbstractJMSAction {
         } else {
             throw new BallerinaException("Connector parameters not defined correctly.");
         }
-    }
-
-    @Override
-    public boolean isNonBlockingAction() {
-        return false;
     }
 }
